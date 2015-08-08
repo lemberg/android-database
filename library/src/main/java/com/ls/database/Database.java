@@ -24,6 +24,7 @@
 package com.ls.database;
 
 import com.ls.database.model.ConflictType;
+import com.ls.database.model.IDBHelper;
 import com.ls.database.model.IDatabase;
 
 import android.content.ContentValues;
@@ -31,20 +32,51 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-abstract class BaseDatabase implements IDatabase {
+class Database implements IDatabase {
 
     private Context mContext;
+
     private SQLiteDatabase mSQLiteDatabase;
+    private SQLiteHelper mDBHelper;
+
     private int mVersion;
     private String mName;
 
-    BaseDatabase(Context context, String name, int version) {
+    private AtomicInteger mDbCounter = new AtomicInteger(0);
+
+    Database(Context context, IDBHelper idbHelper) {
         mContext = context.getApplicationContext();
-        mName = name;
-        mVersion = version;
+        mName = idbHelper.getDatabaseName(context.getApplicationContext());
+        mVersion = idbHelper.getDatabaseVersion(context.getApplicationContext());
+
+        mDBHelper = new SQLiteHelper(context, idbHelper);
+    }
+
+    @Override
+    public synchronized void open() {
+        if (mDbCounter.incrementAndGet() == 1) {
+            mSQLiteDatabase = mDBHelper.getWritableDatabase();
+        }
+    }
+
+    @Override
+    public synchronized void close() {
+        if (mDbCounter.decrementAndGet() == 0) {
+            if (mSQLiteDatabase != null) {
+                mSQLiteDatabase.close();
+                mSQLiteDatabase = null;
+            }
+        }
+    }
+
+    @Override
+    public synchronized boolean isOpened() {
+        return mDbCounter.get() > 0;
     }
 
     @Override
@@ -98,6 +130,8 @@ abstract class BaseDatabase implements IDatabase {
 
     @Override
     public int update(String table, ContentValues values, String whereClause, String[] whereArgs, ConflictType type) {
+        checkState();
+
         return mSQLiteDatabase.updateWithOnConflict(table, values, whereClause, whereArgs, type.getValue());
     }
 
@@ -122,8 +156,6 @@ abstract class BaseDatabase implements IDatabase {
         return mSQLiteDatabase.delete(table, whereClause, whereArgs);
     }
 
-    abstract void checkState();
-
     @Override
     public String getResourceQuery(int resId) {
         return mContext.getString(resId);
@@ -139,11 +171,18 @@ abstract class BaseDatabase implements IDatabase {
         return mVersion;
     }
 
-    SQLiteDatabase getSQLiteDatabase() {
-        return mSQLiteDatabase;
+    synchronized void shutdown() {
+        mDbCounter.set(0);
+
+        mSQLiteDatabase = null;
+
+        mDBHelper.close();
+        mDBHelper = null;
     }
 
-    void setSQLiteDatabase(SQLiteDatabase SQLiteDatabase) {
-        mSQLiteDatabase = SQLiteDatabase;
+    private void checkState() {
+        if (mSQLiteDatabase == null) {
+            throw new IllegalStateException("Database is already closed");
+        }
     }
 }

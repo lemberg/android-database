@@ -38,7 +38,7 @@ import java.util.Map;
 public class DatabaseRegister {
 
     private Context mContext;
-    private Map<String, PrimaryDatabase> mDatabaseMap;
+    private Map<String, Database> mDatabaseMap;
 
     /**
      * Make sure that you create only one instance of {@link DatabaseRegister} in your system to prevent issues related to database working.
@@ -49,7 +49,7 @@ public class DatabaseRegister {
     }
 
     public void shutdownAndClear() {
-        for (PrimaryDatabase database : mDatabaseMap.values()) {
+        for (Database database : mDatabaseMap.values()) {
             database.shutdown();
         }
 
@@ -63,7 +63,7 @@ public class DatabaseRegister {
         String databaseName = helper.getDatabaseName(mContext);
 
         if (!mDatabaseMap.containsKey(databaseName)) {
-            PrimaryDatabase database = new PrimaryDatabase(mContext, helper);
+            Database database = new Database(mContext, helper);
             mDatabaseMap.put(databaseName, database);
         }
     }

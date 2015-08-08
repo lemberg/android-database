@@ -207,7 +207,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         SearchCondition searchCondition = getSearchCondition(key);
 
         if (searchCondition == null) {
-            throw new IllegalStateException("Table with name " + getTableName() + " does not have Primary Key");
+            throw new IllegalStateException(SearchCondition.class.getName() + " can't be null");
         }
 
         IDatabase database = getDatabase();
