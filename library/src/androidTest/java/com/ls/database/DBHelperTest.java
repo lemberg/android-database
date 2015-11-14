@@ -164,7 +164,7 @@ public class DBHelperTest extends InstrumentationTestCase {
         );
     }
 
-    @MethodRunException(minSDKVersion = Build.VERSION_CODES.HONEYCOMB)
+    @MinSdkVersion(versionCode = Build.VERSION_CODES.HONEYCOMB)
     public void testDowngradeMigration3to2() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
@@ -188,7 +188,7 @@ public class DBHelperTest extends InstrumentationTestCase {
         );
     }
 
-    @MethodRunException(minSDKVersion = Build.VERSION_CODES.HONEYCOMB)
+    @MinSdkVersion(versionCode = Build.VERSION_CODES.HONEYCOMB)
     public void testDowngradeMigration2to1() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
@@ -214,7 +214,7 @@ public class DBHelperTest extends InstrumentationTestCase {
         );
     }
 
-    @MethodRunException(minSDKVersion = Build.VERSION_CODES.HONEYCOMB)
+    @MinSdkVersion(versionCode = Build.VERSION_CODES.HONEYCOMB)
     public void testDowngradeMigration3to1() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
@@ -240,7 +240,7 @@ public class DBHelperTest extends InstrumentationTestCase {
         );
     }
 
-    @MethodRunException(minSDKVersion = Build.VERSION_CODES.JELLY_BEAN)
+    @MinSdkVersion(versionCode = Build.VERSION_CODES.JELLY_BEAN)
     public void testOnConfigureCalled() {
         resetInputData();
 
@@ -317,7 +317,7 @@ public class DBHelperTest extends InstrumentationTestCase {
         assertTrue("Upgrade has to be failed", upgradeFailed);
     }
 
-    @MethodRunException(minSDKVersion = Build.VERSION_CODES.HONEYCOMB)
+    @MinSdkVersion(versionCode = Build.VERSION_CODES.HONEYCOMB)
     public void testDowngradeFailed() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
@@ -351,9 +351,9 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         boolean canRun = true;
 
-        MethodRunException methodRunException = method.getAnnotation(MethodRunException.class);
-        if (methodRunException != null) {
-            canRun = Build.VERSION.SDK_INT >= methodRunException.minSDKVersion();
+        MinSdkVersion minSdkVersion = method.getAnnotation(MinSdkVersion.class);
+        if (minSdkVersion != null) {
+            canRun = Build.VERSION.SDK_INT >= minSdkVersion.versionCode();
         }
 
         if (canRun) {

@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface MethodRunException {
+public @interface MinSdkVersion {
 
-    int minSDKVersion();
+    int versionCode();
 }
