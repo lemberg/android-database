@@ -59,4 +59,8 @@ public interface IDAO<Key, Entity> {
     void clear();
 
     boolean contains(Key key);
+
+    long getRowCount();
+
+    long getRowCount(SearchCondition searchCondition);
 }

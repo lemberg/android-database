@@ -24,14 +24,15 @@
 package com.ls.database;
 
 import com.ls.database.model.ConflictType;
+import com.ls.database.model.CursorParser;
 import com.ls.database.model.EntityHolder;
 import com.ls.database.model.IDAO;
 import com.ls.database.model.IDatabase;
 import com.ls.database.model.SearchCondition;
-import com.ls.database.model.CursorParser;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -210,30 +211,45 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
             throw new IllegalStateException(SearchCondition.class.getName() + " can't be null");
         }
 
+        long rowsCount = getRowCount(searchCondition);
+        return rowsCount > 0;
+    }
+
+    public long getRowCount() {
+        return getRowCount(null);
+    }
+
+    public long getRowCount(SearchCondition searchCondition) {
+        long result = 0;
+
         IDatabase database = getDatabase();
         Cursor cursor = null;
         try {
             database.open();
 
-            cursor = database.query(
-                    getTableName(),
-                    null,
-                    searchCondition.getWhereClause(),
-                    searchCondition.getWhereArgs(),
-                    null,
-                    null,
-                    getOrderBy(),
-                    null
-            );
+            String columnName = "count";
+            String query = "SELECT count(*) AS " + columnName + " FROM " + getTableName();
 
-            List<Entity> result = parseCursor(cursor);
-            return !result.isEmpty();
+            String condition = searchCondition != null ? searchCondition.getWhereClause() : null;
+            if (!TextUtils.isEmpty(condition)) {
+                query = query + " WHERE " + condition;
+            }
+
+            String[] arguments = searchCondition != null ? searchCondition.getWhereArgs() : null;
+            cursor = database.rawQuery(query, arguments);
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex(columnName);
+                result = cursor.getLong(columnIndex);
+            }
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
+
             database.close();
         }
+
+        return result;
     }
 
     private long insert(Entity entity, ConflictType type) {

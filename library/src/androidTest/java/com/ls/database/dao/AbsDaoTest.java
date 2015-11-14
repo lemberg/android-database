@@ -370,4 +370,33 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         assertTrue("Table should be empty", dao.selectAllEntities().size() == 0);
     }
+
+    public void testRowsCountAll() {
+        List<Entity> entities = getEntities();
+
+        DAO dao = getDao();
+        //add items
+        dao.insertEntities(entities);
+
+        List<Entity> actualEntities = dao.selectAllEntities();
+        long actualRowsCount = dao.getRowCount();
+        assertTrue("Wrong count", actualRowsCount == actualEntities.size());
+    }
+
+    public void testRowsCountBySearchCondition() {
+        List<Entity> entities = getEntities();
+
+        DAO dao = getDao();
+        //add items
+        dao.insertEntities(entities);
+
+        List<Entity> all = dao.selectAllEntities();
+        Entity entity = all.get(0);
+        Key key = extractKey(entity);
+        SearchCondition searchCondition = getSearchCondition(key);
+
+        long actualRowsCount = dao.getRowCount(searchCondition);
+        List<Entity> actualEntities = dao.selectEntities(key);
+        assertTrue("Wrong count", actualRowsCount == actualEntities.size());
+    }
 }

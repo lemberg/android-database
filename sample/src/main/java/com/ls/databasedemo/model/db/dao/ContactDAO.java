@@ -55,7 +55,7 @@ public class ContactDAO extends BaseDAO<Long, Contact> {
     @Override
     protected SearchCondition getSearchCondition(Long key) {
         return new SearchCondition(
-                key + "=?",
+                Tables.Contacts.COLUMN_ID + "=?",
                 new String[]{
                         String.valueOf(key)
                 }
