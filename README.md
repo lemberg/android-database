@@ -9,10 +9,7 @@ This sample will show you an easy way to:
 
 **Implementation guide**
 
-To implement the following database structure in your app, you need pay your attention on 3 main classes:
-  `IDBHelper`
-  `DatabaseRegister`
-  `BaseDAO`
+To implement the following database structure in your app, you need pay your attention on 3 main classes: `IDBHelper`, `DatabaseRegister`, `BaseDAO`.
 
 
  1. Make your `DatabaseHelper` implements `IDBHelper` and override all the methods to configure your database.
