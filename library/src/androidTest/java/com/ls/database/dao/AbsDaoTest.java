@@ -132,7 +132,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add items
-        dao.insertEntities(entities);
+        dao.insertEntities(entities, true);
 
         List<Entity> actualEntities = dao.selectAllEntities();
         assertEquals("Entities are not equal", entities, actualEntities);
@@ -162,10 +162,10 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add items
-        dao.insertOrReplaceEntities(entities);
+        dao.insertOrReplaceEntities(entities, true);
 
         //add same entities, system must not crash
-        dao.insertOrReplaceEntities(entities);
+        dao.insertOrReplaceEntities(entities, true);
 
         List<Entity> actualEntities = dao.selectAllEntities();
         assertEquals("Entities are not equal", entities, actualEntities);
@@ -203,7 +203,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add one item
-        dao.insertEntities(entities);
+        dao.insertEntities(entities, true);
 
         List<Entity> updatedEntities = updateEntities(entities, getEntities());
 
@@ -212,7 +212,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
             entityHolders.add(new EntityHolder<>(extractKey(updatedEntity), updatedEntity));
         }
 
-        dao.updateEntities(entityHolders);
+        dao.updateEntities(entityHolders, true);
 
         List<Entity> actualEntities = dao.selectAllEntities();
         assertEquals("Entities are not equal", updatedEntities, actualEntities);
@@ -254,7 +254,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add one item
-        dao.insertEntities(entities);
+        dao.insertEntities(entities, true);
 
         List<Entity> updatedEntities = updateEntities(entities, getEntities());
 
@@ -263,10 +263,10 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
             entityHolders.add(new EntityHolder<>(extractKey(updatedEntity), updatedEntity));
         }
 
-        dao.updateOrReplaceEntities(entityHolders);
+        dao.updateOrReplaceEntities(entityHolders, true);
 
         //do same operation, system must not crash
-        dao.updateOrReplaceEntities(entityHolders);
+        dao.updateOrReplaceEntities(entityHolders, true);
 
         List<Entity> actualEntities = dao.selectAllEntities();
         assertEquals("Entities are not equal", updatedEntities, actualEntities);
@@ -291,14 +291,14 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add items
-        dao.insertEntities(entities);
+        dao.insertEntities(entities, true);
         //delete items
 
         List<Key> keys = new ArrayList<>();
         for (Entity entity : entities) {
             keys.add(extractKey(entity));
         }
-        dao.deleteEntities(keys);
+        dao.deleteEntities(keys, true);
 
         List<Entity> actualEntities = dao.selectAllEntities();
         assertTrue("Table should be empty", actualEntities.isEmpty());
@@ -309,7 +309,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add items
-        dao.insertEntities(entities);
+        dao.insertEntities(entities, true);
 
         Entity entity = dao.selectAllEntities().get(0);
 
@@ -325,7 +325,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add items
-        dao.insertEntities(entities);
+        dao.insertEntities(entities, true);
 
         Entity entity = dao.selectAllEntities().get(0);
 
@@ -341,7 +341,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add items
-        dao.insertEntities(entities);
+        dao.insertEntities(entities, true);
 
         List<Entity> actualEntities = dao.selectAllEntities();
         assertEquals("Entities are not equal", entities, actualEntities);
@@ -352,7 +352,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add items
-        dao.insertEntities(entities);
+        dao.insertEntities(entities, true);
 
         Entity actualEntity = entities.get(0);
 
@@ -364,7 +364,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add items
-        dao.insertEntities(entities);
+        dao.insertEntities(entities, true);
 
         dao.clear();
 
@@ -376,7 +376,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add items
-        dao.insertEntities(entities);
+        dao.insertEntities(entities, true);
 
         List<Entity> actualEntities = dao.selectAllEntities();
         long actualRowsCount = dao.getRowCount();
@@ -388,7 +388,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
 
         DAO dao = getDao();
         //add items
-        dao.insertEntities(entities);
+        dao.insertEntities(entities, true);
 
         List<Entity> all = dao.selectAllEntities();
         Entity entity = all.get(0);

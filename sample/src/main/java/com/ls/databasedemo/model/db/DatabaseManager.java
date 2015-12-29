@@ -25,8 +25,8 @@ package com.ls.databasedemo.model.db;
 
 import com.ls.database.DatabaseRegister;
 import com.ls.database.model.IDBHelper;
-import com.ls.databasedemo.model.db.dao.ContactDAO;
-import com.ls.databasedemo.model.db.entity.Contact;
+import com.ls.databasedemo.model.db.dao.UserDAO;
+import com.ls.databasedemo.model.db.entity.User;
 
 import android.content.Context;
 
@@ -55,30 +55,30 @@ public class DatabaseManager {
 
     private Context mContext;
     private DatabaseRegister mDatabaseRegister;
-    private ContactDAO mContactDAO;
+    private UserDAO mUserDAO;
 
     private DatabaseManager(Context context) {
         mContext = context.getApplicationContext();
 
         mDatabaseRegister = new DatabaseRegister(mContext);
 
-        mContactDAO = new ContactDAO(mDatabaseRegister);
+        mUserDAO = new UserDAO(mDatabaseRegister);
     }
 
     public void registerDatabase(IDBHelper helper) {
         mDatabaseRegister.addDatabase(helper);
     }
 
-    public  void addContacts(List<Contact> contacts) {
-        mContactDAO.insertOrReplaceEntities(contacts);
+    public  void addContacts(List<User> users) {
+        mUserDAO.insertOrReplaceEntities(users, true);
     }
 
-    public List<Contact> loadContacts() {
-        List<Contact> contacts = mContactDAO.selectAllEntities();
-        return contacts;
+    public List<User> loadContacts() {
+        List<User> users = mUserDAO.selectAllEntities();
+        return users;
     }
 
     public void clearContacts() {
-        mContactDAO.clear();
+        mUserDAO.clear();
     }
 }

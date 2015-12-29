@@ -32,23 +32,23 @@ public interface IDAO<Key, Entity> {
 
     long insertEntity(Entity entity);
 
-    void insertEntities(List<Entity> entities);
+    void insertEntities(List<Entity> entities, boolean useTransaction);
 
     long insertOrReplaceEntity(Entity entity);
 
-    void insertOrReplaceEntities(List<Entity> entities);
+    void insertOrReplaceEntities(List<Entity> entities, boolean useTransaction);
 
     int updateEntity(Key key, Entity entity);
 
-    int updateEntities(List<EntityHolder<Key, Entity>> entities);
+    int updateEntities(List<EntityHolder<Key, Entity>> entities, boolean useTransaction);
 
     int updateOrReplaceEntity(Key key, Entity entity);
 
-    int updateOrReplaceEntities(List<EntityHolder<Key, Entity>> entities);
+    int updateOrReplaceEntities(List<EntityHolder<Key, Entity>> entities, boolean useTransaction);
 
     int deleteEntity(Key key);
 
-    int deleteEntities(List<Key> keys);
+    int deleteEntities(List<Key> keys, boolean useTransaction);
 
     List<Entity> selectEntities(SearchCondition condition, String orderBy);
 

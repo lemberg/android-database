@@ -66,8 +66,8 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
     }
 
     @Override
-    public void insertEntities(List<Entity> entities) {
-        insert(entities, ConflictType.CONFLICT_NONE);
+    public void insertEntities(List<Entity> entities, boolean useTransaction) {
+        insert(entities, ConflictType.CONFLICT_NONE, useTransaction);
     }
 
     @Override
@@ -76,8 +76,8 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
     }
 
     @Override
-    public void insertOrReplaceEntities(List<Entity> entities) {
-        insert(entities, ConflictType.CONFLICT_REPLACE);
+    public void insertOrReplaceEntities(List<Entity> entities, boolean useTransaction) {
+        insert(entities, ConflictType.CONFLICT_REPLACE, useTransaction);
     }
 
     @Override
@@ -86,8 +86,8 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
     }
 
     @Override
-    public int updateEntities(List<EntityHolder<Key, Entity>> entities) {
-        return update(entities, ConflictType.CONFLICT_NONE);
+    public int updateEntities(List<EntityHolder<Key, Entity>> entities, boolean useTransaction) {
+        return update(entities, ConflictType.CONFLICT_NONE, useTransaction);
     }
 
     @Override
@@ -96,17 +96,33 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
     }
 
     @Override
-    public int updateOrReplaceEntities(List<EntityHolder<Key, Entity>> entities) {
-        return update(entities, ConflictType.CONFLICT_REPLACE);
+    public int updateOrReplaceEntities(List<EntityHolder<Key, Entity>> entities, boolean useTransaction) {
+        return update(entities, ConflictType.CONFLICT_REPLACE, useTransaction);
     }
 
     @Override
     public int deleteEntity(Key key) {
-        return delete(key);
+        int rows = 0;
+
+        SearchCondition searchCondition = getSearchCondition(key);
+
+        IDatabase database = getDatabase();
+        try {
+            database.open();
+            rows = database.delete(
+                    getTableName(),
+                    searchCondition.getWhereClause(),
+                    searchCondition.getWhereArgs()
+            );
+        } finally {
+            database.close();
+        }
+
+        return rows;
     }
 
     @Override
-    public int deleteEntities(List<Key> keys) {
+    public int deleteEntities(List<Key> keys, boolean useTransaction) {
         if (keys == null || keys.isEmpty()) {
             return 0;
         }
@@ -116,21 +132,30 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         IDatabase database = getDatabase();
         try {
             database.open();
-            database.beginTransaction();
 
-            for (Key key : keys) {
-                rows += delete(key);
+            if (useTransaction) {
+                database.beginTransaction();
             }
 
-            database.setTransactionSuccessful();
+            for (Key key : keys) {
+                rows += deleteEntity(key);
+            }
+
+            if (useTransaction) {
+                database.setTransactionSuccessful();
+            }
         } finally {
-            database.endTransaction();
+            if (useTransaction) {
+                database.endTransaction();
+            }
+
             database.close();
         }
 
         return rows;
     }
 
+    @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     public List<Entity> selectEntities(SearchCondition condition, String orderBy) {
         if (condition == null) {
@@ -153,7 +178,6 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
                     null
             );
 
-            //noinspection UnnecessaryLocalVariable
             List<Entity> result = parseCursor(cursor);
             return result;
 
@@ -165,6 +189,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         }
     }
 
+    @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     public List<Entity> selectEntities(Key key) {
         if (key == null) {
@@ -172,14 +197,14 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         }
 
         SearchCondition searchCondition = getSearchCondition(key);
-        //noinspection UnnecessaryLocalVariable
+
         List<Entity> entities = selectEntities(searchCondition, getOrderBy());
         return entities;
     }
 
+    @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     public List<Entity> selectAllEntities() {
-        //noinspection UnnecessaryLocalVariable
         List<Entity> entities = selectEntities(new SearchCondition(null, null), getOrderBy());
         return entities;
     }
@@ -215,10 +240,12 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         return rowsCount > 0;
     }
 
+    @Override
     public long getRowCount() {
         return getRowCount(null);
     }
 
+    @Override
     public long getRowCount(SearchCondition searchCondition) {
         long result = 0;
 
@@ -252,7 +279,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         return result;
     }
 
-    private long insert(Entity entity, ConflictType type) {
+    protected long insert(Entity entity, ConflictType type) {
         if (entity == null) {
             return 0;
         }
@@ -274,7 +301,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         return id;
     }
 
-    private void insert(List<Entity> entities, ConflictType type) {
+    protected void insert(List<Entity> entities, ConflictType type, boolean useTransaction) {
         if (entities == null || entities.isEmpty()) {
             return;
         }
@@ -282,20 +309,27 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         IDatabase database = getDatabase();
         try {
             database.open();
-            database.beginTransaction();
+
+            if (useTransaction) {
+                database.beginTransaction();
+            }
 
             for (Entity entity : entities) {
                 insert(entity, type);
             }
 
-            database.setTransactionSuccessful();
+            if (useTransaction) {
+                database.setTransactionSuccessful();
+            }
         } finally {
-            database.endTransaction();
+            if (useTransaction) {
+                database.endTransaction();
+            }
             database.close();
         }
     }
 
-    private int update(Key key, Entity entity, ConflictType type) {
+    protected int update(Key key, Entity entity, ConflictType type) {
         if (entity == null || key == null) {
             return 0;
         }
@@ -325,7 +359,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         return rows;
     }
 
-    private int update(List<EntityHolder<Key, Entity>> entities, ConflictType type) {
+    protected int update(List<EntityHolder<Key, Entity>> entities, ConflictType type, boolean useTransaction) {
         if (entities == null || entities.isEmpty()) {
             return 0;
         }
@@ -335,35 +369,23 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         IDatabase database = getDatabase();
         try {
             database.open();
-            database.beginTransaction();
+
+            if (useTransaction) {
+                database.beginTransaction();
+            }
 
             for (EntityHolder<Key, Entity> holder : entities) {
                 rows += update(holder.getKey(), holder.getEntity(), type);
             }
 
-            database.setTransactionSuccessful();
+            if (useTransaction) {
+                database.setTransactionSuccessful();
+            }
         } finally {
-            database.endTransaction();
-            database.close();
-        }
+            if (useTransaction) {
+                database.endTransaction();
+            }
 
-        return rows;
-    }
-
-    private int delete(Key key) {
-        int rows = 0;
-
-        SearchCondition searchCondition = getSearchCondition(key);
-
-        IDatabase database = getDatabase();
-        try {
-            database.open();
-            rows = database.delete(
-                    getTableName(),
-                    searchCondition.getWhereClause(),
-                    searchCondition.getWhereArgs()
-            );
-        } finally {
             database.close();
         }
 

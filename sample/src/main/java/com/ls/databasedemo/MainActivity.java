@@ -24,7 +24,7 @@
 package com.ls.databasedemo;
 
 import com.ls.databasedemo.model.db.DatabaseManager;
-import com.ls.databasedemo.model.db.entity.Contact;
+import com.ls.databasedemo.model.db.entity.User;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,10 +41,10 @@ import java.util.List;
  */
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private ArrayAdapter<Contact> mContactAdapter;
+    private ArrayAdapter<User> mContactAdapter;
 
-    private AsyncTask<List<Contact>, Void, List<Contact>> generatorTask;
-    private AsyncTask<Void, Void, List<Contact>> loaderTask;
+    private AsyncTask<List<User>, Void, List<User>> generatorTask;
+    private AsyncTask<Void, Void, List<User>> loaderTask;
     private AsyncTask<Void, Void, Void> clearTask;
 
     @Override
@@ -141,22 +141,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         findViewById(R.id.clear).setEnabled(true);
     }
 
-    private List<Contact> generateContacts() {
-        List<Contact> contacts = new ArrayList<>();
+    private List<User> generateContacts() {
+        List<User> users = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            Contact contact = new Contact();
-            contact.setFirstName("Test");
-            contact.setLastName("User_" + (i + 1));
-            contact.setEmail("test_user" + (i + 1) + "@test.ts");
+            User user = new User();
+            user.setFirstName("Test");
+            user.setLastName("User_" + (i + 1));
+            user.setEmail("test_user" + (i + 1) + "@test.ts");
 
-            contacts.add(contact);
+            users.add(user);
         }
 
-        return contacts;
+        return users;
     }
 
-    private class ContactGeneratorTask extends AsyncTask<List<Contact>, Void, List<Contact>> {
+    private class ContactGeneratorTask extends AsyncTask<List<User>, Void, List<User>> {
 
         @Override
         protected void onPreExecute() {
@@ -165,28 +165,28 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         @Override
-        protected List<Contact> doInBackground(List<Contact>... list) {
+        protected List<User> doInBackground(List<User>... list) {
             if (list.length != 0 ||  list[0] != null) {
-                List<Contact> contacts = list[0];
-                DatabaseManager.getInstance().addContacts(contacts);
+                List<User> users = list[0];
+                DatabaseManager.getInstance().addContacts(users);
 
-                return contacts;
+                return users;
             }
             return new ArrayList<>();
         }
 
         @Override
-        protected void onPostExecute(List<Contact> list) {
+        protected void onPostExecute(List<User> list) {
             hideProgress();
             unlockButtons();
 
-            for (Contact contact : list) {
-                mContactAdapter.add(contact);
+            for (User user : list) {
+                mContactAdapter.add(user);
             }
         }
     }
 
-    private class ContactLoaderTask extends AsyncTask<Void, Void, List<Contact>> {
+    private class ContactLoaderTask extends AsyncTask<Void, Void, List<User>> {
 
         @Override
         protected void onPreExecute() {
@@ -195,19 +195,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         @Override
-        protected List<Contact> doInBackground(Void... params) {
+        protected List<User> doInBackground(Void... params) {
             return DatabaseManager.getInstance().loadContacts();
         }
 
         @Override
-        protected void onPostExecute(List<Contact> list) {
+        protected void onPostExecute(List<User> list) {
             hideProgress();
             unlockButtons();
 
             mContactAdapter.clear();
 
-            for (Contact contact : list) {
-                mContactAdapter.add(contact);
+            for (User user : list) {
+                mContactAdapter.add(user);
             }
         }
     }
