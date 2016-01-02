@@ -36,9 +36,9 @@ import android.content.ContentValues;
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-public class UserDAO extends BaseDAO<Long, Contact> {
+public class ContactDAO extends BaseDAO<Long, Contact> {
 
-    public UserDAO(DatabaseRegister databaseRegister) {
+    public ContactDAO(DatabaseRegister databaseRegister) {
         super(databaseRegister);
     }
 

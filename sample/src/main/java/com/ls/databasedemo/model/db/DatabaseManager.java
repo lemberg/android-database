@@ -24,7 +24,7 @@
 package com.ls.databasedemo.model.db;
 
 import com.ls.database.DatabaseRegister;
-import com.ls.databasedemo.model.db.dao.UserDAO;
+import com.ls.databasedemo.model.db.dao.ContactDAO;
 import com.ls.databasedemo.model.db.entity.Contact;
 
 import android.content.Context;
@@ -54,14 +54,14 @@ public class DatabaseManager {
     }
 
     private DatabaseRegister databaseRegister;
-    private UserDAO userDAO;
+    private ContactDAO contactDAO;
 
     private DatabaseManager(Context context) {
         Context appContext = context.getApplicationContext();
 
         databaseRegister = new DatabaseRegister(appContext);
 
-        userDAO = new UserDAO(databaseRegister);
+        contactDAO = new ContactDAO(databaseRegister);
     }
 
     public void registerDatabase(String databaseName, SQLiteOpenHelper sqLiteOpenHelper) {
@@ -69,15 +69,15 @@ public class DatabaseManager {
     }
 
     public  void addContacts(List<Contact> contacts) {
-        userDAO.insertOrReplaceEntities(contacts, true);
+        contactDAO.insertOrReplaceEntities(contacts, true);
     }
 
     public List<Contact> loadContacts() {
-        List<Contact> contacts = userDAO.selectAllEntities();
+        List<Contact> contacts = contactDAO.selectAllEntities();
         return contacts;
     }
 
     public void clearContacts() {
-        userDAO.clear();
+        contactDAO.clear();
     }
 }
