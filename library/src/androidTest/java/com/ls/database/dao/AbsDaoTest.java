@@ -26,9 +26,9 @@ package com.ls.database.dao;
 import com.ls.database.DatabaseRegister;
 import com.ls.database.model.EntityHolder;
 import com.ls.database.model.IDAO;
-import com.ls.database.model.IDBHelper;
 import com.ls.database.model.SearchCondition;
 
+import android.database.sqlite.SQLiteOpenHelper;
 import android.test.InstrumentationTestCase;
 
 import java.util.ArrayList;
@@ -39,6 +39,17 @@ import java.util.List;
  */
 public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> extends InstrumentationTestCase {
 
+    public static class DbInfo {
+
+        private String databaseName;
+        private SQLiteOpenHelper helper;
+
+        public DbInfo(String databaseName, SQLiteOpenHelper helper) {
+            this.databaseName = databaseName;
+            this.helper = helper;
+        }
+    }
+
     private DatabaseRegister mDatabaseRegister;
 
     @Override
@@ -46,8 +57,9 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
         super.setUp();
 
         mDatabaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
-        //read table info using testing instrumentation context
-        mDatabaseRegister.addDatabase(getDatabase());
+
+        DbInfo info = getDatabase();
+        mDatabaseRegister.addDatabase(info.databaseName, info.helper);
     }
 
     @Override
@@ -64,7 +76,7 @@ public abstract class AbsDaoTest<Key, Entity, DAO extends IDAO<Key, Entity>> ext
         return mDatabaseRegister;
     }
 
-    protected abstract IDBHelper getDatabase();
+    protected abstract DbInfo getDatabase();
 
     protected abstract DAO getDao();
 

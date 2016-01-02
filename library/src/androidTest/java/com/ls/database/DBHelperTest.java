@@ -23,7 +23,6 @@
  */
 package com.ls.database;
 
-import com.ls.database.model.IDBHelper;
 import com.ls.database.model.IMigrationTask;
 
 import android.content.Context;
@@ -49,12 +48,6 @@ public class DBHelperTest extends InstrumentationTestCase {
     private boolean downgradedTo2;
     private boolean downgradedTo1;
 
-    private boolean onConfigureCalled;
-    private boolean onOpenCalled;
-
-    private boolean getDatabaseNameCalled;
-    private boolean getDatabaseVersionCalled;
-
     private boolean upgradeFailed;
     private boolean downgradeFailed;
 
@@ -79,12 +72,6 @@ public class DBHelperTest extends InstrumentationTestCase {
         downgradedTo2 = false;
         downgradedTo1 = false;
 
-        onConfigureCalled = false;
-        onOpenCalled = false;
-
-        getDatabaseNameCalled = false;
-        getDatabaseVersionCalled = false;
-
         upgradeFailed = false;
         downgradeFailed = false;
     }
@@ -92,7 +79,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testUpgradeMigration1to2() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_1));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -100,7 +87,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_2));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_2));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -117,7 +104,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testUpgradeMigration2to3() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_2));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_2));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -125,7 +112,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_3));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_3));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -142,7 +129,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testUpgradeMigration1to3() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_1));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -150,7 +137,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_3));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_3));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -168,7 +155,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testDowngradeMigration3to2() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_3));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_3));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -176,7 +163,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_2));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_2));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -192,7 +179,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testDowngradeMigration2to1() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_2));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_2));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -200,7 +187,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_1));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -218,7 +205,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testDowngradeMigration3to1() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_3));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_3));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -226,7 +213,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_1));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -240,67 +227,10 @@ public class DBHelperTest extends InstrumentationTestCase {
         );
     }
 
-    @MinSdkVersion(versionCode = Build.VERSION_CODES.JELLY_BEAN)
-    public void testOnConfigureCalled() {
-        resetInputData();
-
-        DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
-
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
-        databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
-        databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
-
-        databaseRegister.shutdownAndClear();
-
-        assertTrue("onConfigure(...) method was not called", onConfigureCalled);
-    }
-
-    public void testOnOpenCalled() {
-        resetInputData();
-
-        DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
-
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
-        databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
-        databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
-
-        databaseRegister.shutdownAndClear();
-
-        assertTrue("onOpen(...) method was not called", onOpenCalled);
-    }
-
-    public void testGetDatabaseNameCalled() {
-        resetInputData();
-
-        DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
-
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
-        databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
-        databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
-
-        databaseRegister.shutdownAndClear();
-
-        assertTrue("getDatabaseName(...) method was not called", getDatabaseNameCalled);
-    }
-
-    public void testGetDatabaseVersionCalled() {
-        resetInputData();
-
-        DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
-
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
-        databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
-        databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
-
-        databaseRegister.shutdownAndClear();
-
-        assertTrue("getDatabaseVersion(...) method was not called", getDatabaseVersionCalled);
-    }
-
     public void testUpgradeFailed() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_3));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_3));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -308,7 +238,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_4));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_4));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -321,7 +251,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testDowngradeFailed() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_5));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_5));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -329,7 +259,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_4));
+        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_4));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -361,7 +291,7 @@ public class DBHelperTest extends InstrumentationTestCase {
         }
     }
 
-    private class TestingHelper implements IDBHelper {
+    private class TestingHelper extends MigratableSQLiteOpenHelper {
 
         public static final String DB_NAME = "helper_test_database.db";
 
@@ -378,26 +308,18 @@ public class DBHelperTest extends InstrumentationTestCase {
         int version;
 
         public TestingHelper(int version) {
+            super(getInstrumentation().getTargetContext(), DB_NAME, null, version);
+
             this.version = version;
         }
 
         @Override
-        public List<TableInfo> getTables(Context context) {
+        public List<TableInfo> getTablesInfo(Context context) {
             List<TableInfo> tableInfo = new ArrayList<>();
 
             tableInfo.add(new TableInfo(Queries.CREATE_TABLE_HELPER_TESTS, Queries.DROP_TABLE_HELPER_TESTS));
 
             return tableInfo;
-        }
-
-        @Override
-        public void onConfigure(Context context, SQLiteDatabase database) {
-            onConfigureCalled = true;
-        }
-
-        @Override
-        public void onOpen(Context context, SQLiteDatabase database) {
-            onOpenCalled = true;
         }
 
         @Override
@@ -464,20 +386,6 @@ public class DBHelperTest extends InstrumentationTestCase {
         @Override
         public void onDowngradeMigrationFailed(Context context, SQLiteDatabase database, int oldVersion, int newVersion) {
             downgradeFailed = true;
-        }
-
-        @Override
-        public String getDatabaseName(Context context) {
-            getDatabaseNameCalled = true;
-
-            return DB_NAME;
-        }
-
-        @Override
-        public int getDatabaseVersion(Context context) {
-            getDatabaseVersionCalled = true;
-
-            return version;
         }
     }
 }

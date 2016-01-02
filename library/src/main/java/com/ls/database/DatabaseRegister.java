@@ -23,10 +23,8 @@
  */
 package com.ls.database;
 
-import com.ls.database.model.IDBHelper;
-import com.ls.database.model.IDatabase;
-
 import android.content.Context;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 
 import java.util.HashMap;
@@ -57,23 +55,23 @@ public class DatabaseRegister {
     }
 
     /**
-     * Register database.
+     * @param databaseName Name of database file to register it,
+     *                     should be same that is declared in {@link SQLiteOpenHelper}.
+     * @param sqLiteOpenHelper A sqLiteOpenHelper class to manage database creation and version management.
      */
-    public void addDatabase(IDBHelper helper) {
-        String databaseName = helper.getDatabaseName(mContext);
-
+    public void addDatabase(String databaseName, SQLiteOpenHelper sqLiteOpenHelper) {
         if (!mDatabaseMap.containsKey(databaseName)) {
-            Database database = new Database(mContext, helper);
+            Database database = new Database(mContext, sqLiteOpenHelper);
             mDatabaseMap.put(databaseName, database);
         }
     }
 
-    IDatabase getDatabase(String databaseName) {
+    Database getDatabase(String databaseName) {
         if (TextUtils.isEmpty(databaseName)) {
             throw new IllegalArgumentException("Database name is not specified");
         }
 
-        IDatabase database = mDatabaseMap.get(databaseName);
+        Database database = mDatabaseMap.get(databaseName);
 
         if (database == null) {
             throw new IllegalArgumentException("Database with name " + databaseName + " was not added");

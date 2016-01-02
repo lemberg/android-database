@@ -23,8 +23,8 @@
  */
 package com.ls.databasedemo.model.db;
 
+import com.ls.database.MigratableSQLiteOpenHelper;
 import com.ls.database.TableInfo;
-import com.ls.database.model.IDBHelper;
 import com.ls.database.model.IMigrationTask;
 
 import android.content.Context;
@@ -38,13 +38,17 @@ import java.util.Map;
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-public class DatabaseHelper implements IDBHelper {
+public class DatabaseHelper extends MigratableSQLiteOpenHelper {
 
     public static final String DB_NAME = "dao_test_database.db";
     public static final int DB_VERSION = 2;
 
+    public DatabaseHelper(Context context) {
+        super(context, DB_NAME, null, DB_VERSION);
+    }
+
     @Override
-    public List<TableInfo> getTables(Context context) {
+    public List<TableInfo> getTablesInfo(Context context) {
         List<TableInfo> list = new ArrayList<>();
 
         list.add(new TableInfo(Queries.CREATE_TABLE_CONTACTS, Queries.DROP_TABLE_CONTACTS));
@@ -53,19 +57,11 @@ public class DatabaseHelper implements IDBHelper {
     }
 
     @Override
-    public void onConfigure(Context context, SQLiteDatabase database) {
-    }
-
-    @Override
-    public void onOpen(Context context, SQLiteDatabase database) {
-    }
-
-    @Override
     public Map<Integer, IMigrationTask> getUpgradeMigrationTasks(Context context) {
         Map<Integer, IMigrationTask> map = new HashMap<>();
 
         //it will be used while migration from 1 to 2 versions. Example code
-        map.put(DB_VERSION, new DefaultUpgradeMigrationTask(getTables(context)));
+        map.put(DB_VERSION, new DefaultUpgradeMigrationTask(getTablesInfo(context)));
         return map;
     }
 
@@ -80,15 +76,5 @@ public class DatabaseHelper implements IDBHelper {
 
     @Override
     public void onDowngradeMigrationFailed(Context context, SQLiteDatabase database, int oldVersion, int newVersion) {
-    }
-
-    @Override
-    public String getDatabaseName(Context context) {
-        return DB_NAME;
-    }
-
-    @Override
-    public int getDatabaseVersion(Context context) {
-        return DB_VERSION;
     }
 }

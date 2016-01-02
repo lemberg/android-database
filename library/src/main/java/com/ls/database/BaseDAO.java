@@ -27,7 +27,6 @@ import com.ls.database.model.ConflictType;
 import com.ls.database.model.CursorParser;
 import com.ls.database.model.EntityHolder;
 import com.ls.database.model.IDAO;
-import com.ls.database.model.IDatabase;
 import com.ls.database.model.SearchCondition;
 
 import android.content.ContentValues;
@@ -48,9 +47,9 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         mDatabaseRegister = databaseRegister;
     }
 
-    protected IDatabase getDatabase() {
+    protected Database getDatabase() {
         String databaseName = getDatabaseName();
-        IDatabase database = mDatabaseRegister.getDatabase(databaseName);
+        Database database = mDatabaseRegister.getDatabase(databaseName);
 
         if (database == null) {
             throw new IllegalArgumentException("Database with name " + databaseName
@@ -106,7 +105,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
 
         SearchCondition searchCondition = getSearchCondition(key);
 
-        IDatabase database = getDatabase();
+        Database database = getDatabase();
         try {
             database.open();
             rows = database.delete(
@@ -129,7 +128,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
 
         int rows = 0;
 
-        IDatabase database = getDatabase();
+        Database database = getDatabase();
         try {
             database.open();
 
@@ -162,7 +161,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
             throw new NullPointerException("Key can't be null");
         }
 
-        IDatabase database = getDatabase();
+        Database database = getDatabase();
         Cursor cursor = null;
         try {
             database.open();
@@ -211,7 +210,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
 
     @Override
     public void clear() {
-        IDatabase database = getDatabase();
+        Database database = getDatabase();
         try {
             database.open();
             database.delete(
@@ -249,7 +248,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
     public long getRowCount(SearchCondition searchCondition) {
         long result = 0;
 
-        IDatabase database = getDatabase();
+        Database database = getDatabase();
         Cursor cursor = null;
         try {
             database.open();
@@ -289,7 +288,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         long id = 0;
 
         if (contentValues.size() > 0) {
-            IDatabase database = getDatabase();
+            Database database = getDatabase();
             try {
                 database.open();
                 id = database.insert(getTableName(), null, contentValues, type);
@@ -306,7 +305,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
             return;
         }
 
-        IDatabase database = getDatabase();
+        Database database = getDatabase();
         try {
             database.open();
 
@@ -341,7 +340,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
         ContentValues contentValues = toContentValues(entity);
 
         if (contentValues.size() > 0) {
-            IDatabase database = getDatabase();
+            Database database = getDatabase();
             try {
                 database.open();
                 rows = database.update(
@@ -366,7 +365,7 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
 
         int rows = 0;
 
-        IDatabase database = getDatabase();
+        Database database = getDatabase();
         try {
             database.open();
 

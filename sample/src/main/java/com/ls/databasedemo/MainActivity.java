@@ -24,7 +24,7 @@
 package com.ls.databasedemo;
 
 import com.ls.databasedemo.model.db.DatabaseManager;
-import com.ls.databasedemo.model.db.entity.User;
+import com.ls.databasedemo.model.db.entity.Contact;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,10 +41,10 @@ import java.util.List;
  */
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private ArrayAdapter<User> mContactAdapter;
+    private ArrayAdapter<Contact> contactAdapter;
 
-    private AsyncTask<List<User>, Void, List<User>> generatorTask;
-    private AsyncTask<Void, Void, List<User>> loaderTask;
+    private AsyncTask<List<Contact>, Void, List<Contact>> generatorTask;
+    private AsyncTask<Void, Void, List<Contact>> loaderTask;
     private AsyncTask<Void, Void, Void> clearTask;
 
     @Override
@@ -52,7 +52,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mContactAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
+        contactAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
 
         initViews();
     }
@@ -75,7 +75,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void initViews() {
         ListView listView = (ListView) findViewById(R.id.list);
-        listView.setAdapter(mContactAdapter);
+        listView.setAdapter(contactAdapter);
 
         findViewById(R.id.generate).setOnClickListener(this);
         findViewById(R.id.clear).setOnClickListener(this);
@@ -141,22 +141,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         findViewById(R.id.clear).setEnabled(true);
     }
 
-    private List<User> generateContacts() {
-        List<User> users = new ArrayList<>();
+    private List<Contact> generateContacts() {
+        List<Contact> contacts = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            User user = new User();
-            user.setFirstName("Test");
-            user.setLastName("User_" + (i + 1));
-            user.setEmail("test_user" + (i + 1) + "@test.ts");
+            Contact contact = new Contact();
+            contact.setFirstName("Test");
+            contact.setLastName("User_" + (i + 1));
+            contact.setEmail("test_user" + (i + 1) + "@test.ts");
 
-            users.add(user);
+            contacts.add(contact);
         }
 
-        return users;
+        return contacts;
     }
 
-    private class ContactGeneratorTask extends AsyncTask<List<User>, Void, List<User>> {
+    private class ContactGeneratorTask extends AsyncTask<List<Contact>, Void, List<Contact>> {
 
         @Override
         protected void onPreExecute() {
@@ -165,28 +165,28 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         @Override
-        protected List<User> doInBackground(List<User>... list) {
+        protected List<Contact> doInBackground(List<Contact>... list) {
             if (list.length != 0 ||  list[0] != null) {
-                List<User> users = list[0];
-                DatabaseManager.getInstance().addContacts(users);
+                List<Contact> contacts = list[0];
+                DatabaseManager.getInstance().addContacts(contacts);
 
-                return users;
+                return contacts;
             }
             return new ArrayList<>();
         }
 
         @Override
-        protected void onPostExecute(List<User> list) {
+        protected void onPostExecute(List<Contact> list) {
             hideProgress();
             unlockButtons();
 
-            for (User user : list) {
-                mContactAdapter.add(user);
+            for (Contact contact : list) {
+                contactAdapter.add(contact);
             }
         }
     }
 
-    private class ContactLoaderTask extends AsyncTask<Void, Void, List<User>> {
+    private class ContactLoaderTask extends AsyncTask<Void, Void, List<Contact>> {
 
         @Override
         protected void onPreExecute() {
@@ -195,19 +195,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         @Override
-        protected List<User> doInBackground(Void... params) {
+        protected List<Contact> doInBackground(Void... params) {
             return DatabaseManager.getInstance().loadContacts();
         }
 
         @Override
-        protected void onPostExecute(List<User> list) {
+        protected void onPostExecute(List<Contact> list) {
             hideProgress();
             unlockButtons();
 
-            mContactAdapter.clear();
+            contactAdapter.clear();
 
-            for (User user : list) {
-                mContactAdapter.add(user);
+            for (Contact contact : list) {
+                contactAdapter.add(contact);
             }
         }
     }
@@ -232,7 +232,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             hideProgress();
             unlockButtons();
 
-            mContactAdapter.clear();
+            contactAdapter.clear();
         }
     }
 }

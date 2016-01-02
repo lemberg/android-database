@@ -29,14 +29,14 @@ import com.ls.database.model.CursorParser;
 import com.ls.database.model.SearchCondition;
 import com.ls.databasedemo.model.db.DatabaseHelper;
 import com.ls.databasedemo.model.db.Tables;
-import com.ls.databasedemo.model.db.entity.User;
+import com.ls.databasedemo.model.db.entity.Contact;
 
 import android.content.ContentValues;
 
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-public class UserDAO extends BaseDAO<Long, User> {
+public class UserDAO extends BaseDAO<Long, Contact> {
 
     public UserDAO(DatabaseRegister databaseRegister) {
         super(databaseRegister);
@@ -68,30 +68,30 @@ public class UserDAO extends BaseDAO<Long, User> {
     }
 
     @Override
-    protected ContentValues toContentValues(User user) {
+    protected ContentValues toContentValues(Contact contact) {
         ContentValues contentValues = new ContentValues();
 
         //for case when user got entity from database where id is autoincrement column
-        if (user.getId() > 0) {
-            contentValues.put(Tables.Contacts.COLUMN_ID, user.getId());
+        if (contact.getId() > 0) {
+            contentValues.put(Tables.Contacts.COLUMN_ID, contact.getId());
         }
 
-        contentValues.put(Tables.Contacts.COLUMN_FIRST_NAME, user.getFirstName());
-        contentValues.put(Tables.Contacts.COLUMN_LAST_NAME, user.getLastName());
-        contentValues.put(Tables.Contacts.COLUMN_EMAIL, user.getEmail());
+        contentValues.put(Tables.Contacts.COLUMN_FIRST_NAME, contact.getFirstName());
+        contentValues.put(Tables.Contacts.COLUMN_LAST_NAME, contact.getLastName());
+        contentValues.put(Tables.Contacts.COLUMN_EMAIL, contact.getEmail());
 
         return contentValues;
     }
 
     @Override
-    protected User toEntity(CursorParser parser) {
-        User user = new User();
+    protected Contact toEntity(CursorParser parser) {
+        Contact contact = new Contact();
 
-        user.setId(parser.readLong(Tables.Contacts.COLUMN_ID));
-        user.setFirstName(parser.readString(Tables.Contacts.COLUMN_FIRST_NAME));
-        user.setLastName(parser.readString(Tables.Contacts.COLUMN_LAST_NAME));
-        user.setEmail(parser.readString(Tables.Contacts.COLUMN_EMAIL));
+        contact.setId(parser.readLong(Tables.Contacts.COLUMN_ID));
+        contact.setFirstName(parser.readString(Tables.Contacts.COLUMN_FIRST_NAME));
+        contact.setLastName(parser.readString(Tables.Contacts.COLUMN_LAST_NAME));
+        contact.setEmail(parser.readString(Tables.Contacts.COLUMN_EMAIL));
 
-        return user;
+        return contact;
     }
 }

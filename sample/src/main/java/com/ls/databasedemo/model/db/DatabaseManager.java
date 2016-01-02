@@ -24,11 +24,11 @@
 package com.ls.databasedemo.model.db;
 
 import com.ls.database.DatabaseRegister;
-import com.ls.database.model.IDBHelper;
 import com.ls.databasedemo.model.db.dao.UserDAO;
-import com.ls.databasedemo.model.db.entity.User;
+import com.ls.databasedemo.model.db.entity.Contact;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.List;
 
@@ -53,32 +53,31 @@ public class DatabaseManager {
         return INSTANCE;
     }
 
-    private Context mContext;
-    private DatabaseRegister mDatabaseRegister;
-    private UserDAO mUserDAO;
+    private DatabaseRegister databaseRegister;
+    private UserDAO userDAO;
 
     private DatabaseManager(Context context) {
-        mContext = context.getApplicationContext();
+        Context appContext = context.getApplicationContext();
 
-        mDatabaseRegister = new DatabaseRegister(mContext);
+        databaseRegister = new DatabaseRegister(appContext);
 
-        mUserDAO = new UserDAO(mDatabaseRegister);
+        userDAO = new UserDAO(databaseRegister);
     }
 
-    public void registerDatabase(IDBHelper helper) {
-        mDatabaseRegister.addDatabase(helper);
+    public void registerDatabase(String databaseName, SQLiteOpenHelper sqLiteOpenHelper) {
+        databaseRegister.addDatabase(databaseName, sqLiteOpenHelper);
     }
 
-    public  void addContacts(List<User> users) {
-        mUserDAO.insertOrReplaceEntities(users, true);
+    public  void addContacts(List<Contact> contacts) {
+        userDAO.insertOrReplaceEntities(contacts, true);
     }
 
-    public List<User> loadContacts() {
-        List<User> users = mUserDAO.selectAllEntities();
-        return users;
+    public List<Contact> loadContacts() {
+        List<Contact> contacts = userDAO.selectAllEntities();
+        return contacts;
     }
 
     public void clearContacts() {
-        mUserDAO.clear();
+        userDAO.clear();
     }
 }

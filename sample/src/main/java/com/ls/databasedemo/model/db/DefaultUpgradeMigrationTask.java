@@ -35,10 +35,10 @@ import java.util.List;
  */
 public class DefaultUpgradeMigrationTask implements IMigrationTask {
 
-    private List<TableInfo> mInfoList;
+    private List<TableInfo> infoList;
 
     public DefaultUpgradeMigrationTask(List<TableInfo> infoList) {
-        mInfoList = infoList;
+        this.infoList = infoList;
     }
 
     @Override
@@ -48,16 +48,16 @@ public class DefaultUpgradeMigrationTask implements IMigrationTask {
     }
 
     private void create(SQLiteDatabase db) {
-        if (mInfoList != null) {
-            for (TableInfo table : mInfoList) {
+        if (infoList != null) {
+            for (TableInfo table : infoList) {
                 db.execSQL(table.getCreateTableQuery());
             }
         }
     }
 
     private void drop(SQLiteDatabase db) {
-        if (mInfoList != null) {
-            for (TableInfo table : mInfoList) {
+        if (infoList != null) {
+            for (TableInfo table : infoList) {
                 db.execSQL(table.getDropTableQuery());
             }
         }

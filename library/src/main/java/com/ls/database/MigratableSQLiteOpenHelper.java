@@ -23,11 +23,11 @@
  */
 package com.ls.database;
 
-import com.ls.database.model.IDBHelper;
 import com.ls.database.model.IMigrationTask;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -43,37 +43,85 @@ import java.util.Map;
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-class SQLiteHelper extends SQLiteOpenHelper {
+public abstract class MigratableSQLiteOpenHelper extends SQLiteOpenHelper {
 
-    private Context mContext;
-    private IDBHelper mIDBHelper;
+    private Context appContext;
 
-    SQLiteHelper(Context context, IDBHelper idbHelper) {
-        super(
-                context.getApplicationContext(),
-                idbHelper.getDatabaseName(context.getApplicationContext()),
-                null,
-                idbHelper.getDatabaseVersion(context.getApplicationContext())
-        );
+    public MigratableSQLiteOpenHelper(
+            Context context,
+            String name,
+            SQLiteDatabase.CursorFactory factory,
+            int version) {
 
-        mContext = context.getApplicationContext();
-        mIDBHelper = idbHelper;
+        super(context, name, factory, version);
+
+        this.appContext = context.getApplicationContext();
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public MigratableSQLiteOpenHelper(
+            Context context,
+            String name,
+            SQLiteDatabase.CursorFactory factory,
+            int version,
+            DatabaseErrorHandler errorHandler) {
+
+        super(context.getApplicationContext(), name, factory, version, errorHandler);
+
+        this.appContext = context.getApplicationContext();
+    }
+
+    /**
+     * Returns list of SQL scripts to create tables or triggers of database.
+     */
+    public abstract List<TableInfo> getTablesInfo(Context context);
+
+    /**
+     * Returns set of migration tasks. {@link Integer} - version of database,
+     * {@link IMigrationTask} - task which will be executed for version of database.
+     *
+     * If map will be empty then {@link android.database.sqlite.SQLiteException} will be thrown.
+     *
+     * Tasks will be called in increasing order according to key versions, they will be sorted before upgrading.
+     */
+    public abstract Map<Integer, IMigrationTask> getUpgradeMigrationTasks(Context context);
+
+    /**
+     * Calls if database migration has failed with {@link android.database.sqlite.SQLiteException}.
+     * This method serves to give possibility to correct some data which depends on database migration.
+     * After this method database will be recreated automatically using data of {@link #getTablesInfo(Context)}.
+     */
+    public abstract void onUpgradeMigrationFailed(Context context, SQLiteDatabase database, int oldVersion, int newVersion);
+
+    /**
+     * Returns set of migration tasks. {@link Integer} - version of database,
+     * {@link IMigrationTask} - task which will be executed for version of database.
+     *
+     * Called when the database needs to be downgraded.
+     * It is called whenever current version is newer than requested one.
+     * This method executes within a transaction.
+     * If an exception is thrown, all changes will automatically be rolled back.
+     *
+     * It will be called with SDK version {@link android.os.Build.VERSION_CODES#HONEYCOMB}.
+     *
+     * Tasks will be called in decreasing order according to key versions, they will be sorted before downgrading.
+     *
+     * If map will be empty then {@link android.database.sqlite.SQLiteException} will be thrown.
+     */
+    public abstract Map<Integer, IMigrationTask> getDowngradeMigrationTasks(Context context);
+
+    /**
+     * Calls if database migration has failed with {@link android.database.sqlite.SQLiteException}.
+     * This method serves to give possibility to correct some data which depends on database migration.
+     * After this method database will be recreated automatically using data of {@link #getTablesInfo(Context)}.
+     *
+     * It will be called with SDK version {@link android.os.Build.VERSION_CODES#HONEYCOMB}.
+     */
+    public abstract void onDowngradeMigrationFailed(Context context, SQLiteDatabase database, int oldVersion, int newVersion);
+
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public final void onCreate(SQLiteDatabase db) {
         create(db);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    public void onConfigure(SQLiteDatabase db) {
-        mIDBHelper.onConfigure(mContext, db);
-    }
-
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        mIDBHelper.onOpen(mContext, db);
     }
 
     @Override
@@ -94,7 +142,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
             }
         } catch (SQLiteException e) {
             try {
-                mIDBHelper.onUpgradeMigrationFailed(mContext, db, oldVersion, newVersion);
+                onUpgradeMigrationFailed(appContext, db, oldVersion, newVersion);
             } finally {
                 drop(db);
                 create(db);
@@ -121,7 +169,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
             }
         } catch (SQLiteException e) {
             try {
-                mIDBHelper.onDowngradeMigrationFailed(mContext, db, oldVersion, newVersion);
+                onDowngradeMigrationFailed(appContext, db, oldVersion, newVersion);
             } finally {
                 drop(db);
                 create(db);
@@ -136,7 +184,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
 
         switch (type) {
             case UPGRADE:
-                tasks = mIDBHelper.getUpgradeMigrationTasks(mContext);
+                tasks = getUpgradeMigrationTasks(appContext);
 
                 comparator = new Comparator<Map.Entry<Integer, IMigrationTask>>() {
 
@@ -148,7 +196,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
                 break;
 
             case DOWNGRADE:
-                tasks = mIDBHelper.getDowngradeMigrationTasks(mContext);
+                tasks = getDowngradeMigrationTasks(appContext);
 
                 comparator = new Comparator<Map.Entry<Integer, IMigrationTask>>() {
 
@@ -179,7 +227,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     private void create(SQLiteDatabase db) {
-        List<TableInfo> tables = mIDBHelper.getTables(mContext);
+        List<TableInfo> tables = getTablesInfo(appContext);
         if (tables != null) {
             for (TableInfo table : tables) {
                 db.execSQL(table.getCreateTableQuery());
@@ -188,7 +236,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     private void drop(SQLiteDatabase db) {
-        List<TableInfo> tables = mIDBHelper.getTables(mContext);
+        List<TableInfo> tables = getTablesInfo(appContext);
         if (tables != null) {
             for (TableInfo table : tables) {
                 db.execSQL(table.getDropTableQuery());

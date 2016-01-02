@@ -25,7 +25,6 @@ package com.ls.database.dao;
 
 import com.ls.database.entity.DataTypesEntity;
 import com.ls.database.entity.EnumValue;
-import com.ls.database.model.IDBHelper;
 import com.ls.database.model.SearchCondition;
 
 import java.io.UnsupportedEncodingException;
@@ -38,8 +37,8 @@ import java.util.List;
 public class DataTypesTest extends AbsDaoTest<Long, DataTypesEntity, DataTypesDAO> {
 
     @Override
-    protected IDBHelper getDatabase() {
-        return new DAOTestingHelper();
+    protected DbInfo getDatabase() {
+        return new DbInfo(DAOTestingHelper.DB_NAME, new DAOTestingHelper(getInstrumentation().getTargetContext()));
     }
 
     @Override

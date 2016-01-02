@@ -23,11 +23,12 @@
  */
 package com.ls.databasedemo.model.db.dao;
 
-import android.content.Context;
-import android.test.InstrumentationTestCase;
 import com.ls.database.DatabaseRegister;
 import com.ls.databasedemo.model.db.DatabaseHelper;
-import com.ls.databasedemo.model.db.entity.User;
+import com.ls.databasedemo.model.db.entity.Contact;
+
+import android.content.Context;
+import android.test.InstrumentationTestCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.List;
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-public class UserDaoTest extends InstrumentationTestCase {
+public class ContactDaoTest extends InstrumentationTestCase {
 
     private DatabaseRegister databaseRegister;
 
@@ -45,7 +46,7 @@ public class UserDaoTest extends InstrumentationTestCase {
 
         Context context = getInstrumentation().getTargetContext();
         databaseRegister = new DatabaseRegister(context);
-        databaseRegister.addDatabase(new DatabaseHelper());
+        databaseRegister.addDatabase(DatabaseHelper.DB_NAME, new DatabaseHelper(context));
 
         new UserDAO(databaseRegister).clear();
     }
@@ -60,76 +61,76 @@ public class UserDaoTest extends InstrumentationTestCase {
         databaseRegister = null;
     }
 
-    private List<User> createUserEntities() {
-        List<User> entities = new ArrayList<>();
+    private List<Contact> createUserEntities() {
+        List<Contact> entities = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
             int value = (i + 1);
-            entities.add(new User(value, "test" + value, "test" + value, "test" + value));
+            entities.add(new Contact(value, "test" + value, "test" + value, "test" + value));
         }
 
         return entities;
     }
 
     public void testInsertEntity() throws Exception {
-        User expectedUser = new User(1, "test", "test", "test");
+        Contact expectedContact = new Contact(1, "test", "test", "test");
         UserDAO userDao = new UserDAO(databaseRegister);
 
-        userDao.insertEntity(expectedUser);
+        userDao.insertEntity(expectedContact);
 
-        List<User> actualEntities = userDao.selectAllEntities();
-        User actualUser = actualEntities.get(0);
+        List<Contact> actualEntities = userDao.selectAllEntities();
+        Contact actualContact = actualEntities.get(0);
 
-        assertEquals("Entities are not equal", expectedUser, actualUser);
+        assertEquals("Entities are not equal", expectedContact, actualContact);
     }
 
     public void testUpdateEntity() {
-        User expectedUser = new User(1, "test", "test", "test");
+        Contact expectedContact = new Contact(1, "test", "test", "test");
         UserDAO userDao = new UserDAO(databaseRegister);
 
-        userDao.insertEntity(expectedUser);
+        userDao.insertEntity(expectedContact);
 
-        User updatedUser = new User(1, "test_2", "test_2", "test_2");
+        Contact updatedContact = new Contact(1, "test_2", "test_2", "test_2");
 
-        userDao.updateEntity(updatedUser.getId(), updatedUser);
+        userDao.updateEntity(updatedContact.getId(), updatedContact);
 
-        List<User> actualEntities = userDao.selectAllEntities();
-        User actualUser = actualEntities.get(0);
+        List<Contact> actualEntities = userDao.selectAllEntities();
+        Contact actualContact = actualEntities.get(0);
 
-        assertEquals("Entities are not equal", updatedUser, actualUser);
+        assertEquals("Entities are not equal", updatedContact, actualContact);
     }
 
     public void testDeleteEntity() throws Exception {
-        User expectedUser = new User(1, "test", "test", "test");
+        Contact expectedContact = new Contact(1, "test", "test", "test");
         UserDAO userDao = new UserDAO(databaseRegister);
 
-        userDao.insertEntity(expectedUser);
+        userDao.insertEntity(expectedContact);
 
-        int deletedRows = userDao.deleteEntity(expectedUser.getId());
-        List<User> actualEntities = userDao.selectAllEntities();
+        int deletedRows = userDao.deleteEntity(expectedContact.getId());
+        List<Contact> actualEntities = userDao.selectAllEntities();
 
-        assertTrue("Test entity is not deleted", !actualEntities.contains(expectedUser) && deletedRows == 1);
+        assertTrue("Test entity is not deleted", !actualEntities.contains(expectedContact) && deletedRows == 1);
     }
 
     public void testClear() throws Exception {
-        List<User> entities = createUserEntities();
+        List<Contact> entities = createUserEntities();
         UserDAO userDao = new UserDAO(databaseRegister);
 
         userDao.insertEntities(entities, true);
         userDao.clear();
 
-        List<User> actualEntities = userDao.selectAllEntities();
+        List<Contact> actualEntities = userDao.selectAllEntities();
 
         assertTrue("Table should be empty", actualEntities.size() == 0);
     }
 
     public void testSelectEntities() throws Exception {
-        List<User> entities = createUserEntities();
+        List<Contact> entities = createUserEntities();
         UserDAO userDao = new UserDAO(databaseRegister);
 
         userDao.insertEntities(entities, true);
 
-        List<User> actualEntities = userDao.selectAllEntities();
+        List<Contact> actualEntities = userDao.selectAllEntities();
         assertEquals("Entities are not equal", entities, actualEntities);
     }
 }

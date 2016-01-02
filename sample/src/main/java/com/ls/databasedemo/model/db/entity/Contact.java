@@ -29,21 +29,21 @@ import android.os.Parcelable;
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-public class User implements Parcelable {
+public class Contact implements Parcelable {
 
     private long id;
     private String firstName;
     private String lastName;
     private String email;
 
-    public User(long id, String firstName, String lastName, String email) {
+    public Contact(long id, String firstName, String lastName, String email) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
-    public User() {
+    public Contact() {
     }
 
     public long getId() {
@@ -88,22 +88,22 @@ public class User implements Parcelable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof User)) {
+        if (!(o instanceof Contact)) {
             return false;
         }
 
-        User user = (User) o;
+        Contact contact = (Contact) o;
 
-        if (id != user.id) {
+        if (id != contact.id) {
             return false;
         }
-        if (firstName != null ? !firstName.equals(user.firstName) : user.firstName != null) {
+        if (firstName != null ? !firstName.equals(contact.firstName) : contact.firstName != null) {
             return false;
         }
-        if (lastName != null ? !lastName.equals(user.lastName) : user.lastName != null) {
+        if (lastName != null ? !lastName.equals(contact.lastName) : contact.lastName != null) {
             return false;
         }
-        return !(email != null ? !email.equals(user.email) : user.email != null);
+        return !(email != null ? !email.equals(contact.email) : contact.email != null);
 
     }
 
@@ -130,20 +130,20 @@ public class User implements Parcelable {
         dest.writeString(this.email);
     }
 
-    protected User(Parcel in) {
+    protected Contact(Parcel in) {
         this.id = in.readLong();
         this.firstName = in.readString();
         this.lastName = in.readString();
         this.email = in.readString();
     }
 
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        public User createFromParcel(Parcel source) {
-            return new User(source);
+    public static final Creator<Contact> CREATOR = new Creator<Contact>() {
+        public Contact createFromParcel(Parcel source) {
+            return new Contact(source);
         }
 
-        public User[] newArray(int size) {
-            return new User[size];
+        public Contact[] newArray(int size) {
+            return new Contact[size];
         }
     };
 }

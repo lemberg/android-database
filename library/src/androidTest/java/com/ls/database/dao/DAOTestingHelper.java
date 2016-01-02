@@ -23,9 +23,9 @@
  */
 package com.ls.database.dao;
 
+import com.ls.database.MigratableSQLiteOpenHelper;
 import com.ls.database.Queries;
 import com.ls.database.TableInfo;
-import com.ls.database.model.IDBHelper;
 import com.ls.database.model.IMigrationTask;
 
 import android.content.Context;
@@ -39,28 +39,22 @@ import java.util.Map;
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-public class DAOTestingHelper implements IDBHelper {
+public class DAOTestingHelper extends MigratableSQLiteOpenHelper {
 
     public static final String DB_NAME = "dao_test_database.db";
     public static final int DB_VERSION = 1;
 
+    public DAOTestingHelper(Context context) {
+        super(context, DB_NAME, null, DB_VERSION);
+    }
+
     @Override
-    public List<TableInfo> getTables(Context context) {
+    public List<TableInfo> getTablesInfo(Context context) {
         List<TableInfo> list = new ArrayList<>();
 
         list.add(new TableInfo(Queries.CREATE_TABLE_DAO_TESTS, Queries.DROP_TABLE_DAO_TESTS));
 
         return list;
-    }
-
-    @Override
-    public void onConfigure(Context context, SQLiteDatabase database) {
-
-    }
-
-    @Override
-    public void onOpen(Context context, SQLiteDatabase database) {
-
     }
 
     @Override
@@ -81,15 +75,5 @@ public class DAOTestingHelper implements IDBHelper {
     @Override
     public void onDowngradeMigrationFailed(Context context, SQLiteDatabase database, int oldVersion, int newVersion) {
 
-    }
-
-    @Override
-    public String getDatabaseName(Context context) {
-        return DB_NAME;
-    }
-
-    @Override
-    public int getDatabaseVersion(Context context) {
-        return DB_VERSION;
     }
 }
