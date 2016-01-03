@@ -239,7 +239,7 @@ public abstract class MigratableSQLiteOpenHelper extends SQLiteOpenHelper {
         List<TableInfo> tables = getTablesInfo(appContext);
         if (tables != null) {
             for (TableInfo table : tables) {
-                db.execSQL(table.getDropTableQuery());
+                db.execSQL("DROP TABLE IF EXISTS " + table.getTableName());
             }
         }
     }

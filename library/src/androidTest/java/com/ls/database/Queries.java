@@ -28,7 +28,7 @@ package com.ls.database;
  */
 public class Queries {
 
-    public static final String CREATE_TABLE_DAO_TESTS = "CREATE TABLE IF NOT EXISTS " + Tables.DataTypes.NAME
+    public static final String CREATE_DATA_TYPES_TABLE = "CREATE TABLE IF NOT EXISTS " + Tables.DataTypes.NAME
             + " ("
             + Tables.DataTypes.COLUMN_ID + " INTEGER PRIMARY KEY,"
             + Tables.DataTypes.COLUMN_STRING + " TEXT,"
@@ -43,13 +43,9 @@ public class Queries {
             + Tables.DataTypes.COLUMN_ENUM + " TEXT"
             + ");";
 
-    public static final String DROP_TABLE_DAO_TESTS = "DROP TABLE IF EXISTS " + Tables.DataTypes.NAME;
-
-    public static final String CREATE_TABLE_HELPER_TESTS = "CREATE TABLE IF NOT EXISTS " + Tables.SimpleTable.NAME
+    public static final String CREATE_SIMPLE_DATA_TABLE = "CREATE TABLE IF NOT EXISTS " + Tables.SimpleTable.NAME
             + " ("
             + Tables.SimpleTable.COLUMN_ID + " INTEGER PRIMARY KEY,"
             + Tables.SimpleTable.COLUMN_NAME + " TEXT"
             + ");";
-
-    public static final String DROP_TABLE_HELPER_TESTS = "DROP TABLE IF EXISTS " + Tables.SimpleTable.NAME;
 }

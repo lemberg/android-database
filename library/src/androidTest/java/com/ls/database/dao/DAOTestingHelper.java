@@ -26,6 +26,7 @@ package com.ls.database.dao;
 import com.ls.database.MigratableSQLiteOpenHelper;
 import com.ls.database.Queries;
 import com.ls.database.TableInfo;
+import com.ls.database.Tables;
 import com.ls.database.model.IMigrationTask;
 
 import android.content.Context;
@@ -52,7 +53,7 @@ public class DAOTestingHelper extends MigratableSQLiteOpenHelper {
     public List<TableInfo> getTablesInfo(Context context) {
         List<TableInfo> list = new ArrayList<>();
 
-        list.add(new TableInfo(Queries.CREATE_TABLE_DAO_TESTS, Queries.DROP_TABLE_DAO_TESTS));
+        list.add(new TableInfo(Tables.DataTypes.NAME, Queries.CREATE_DATA_TYPES_TABLE));
 
         return list;
     }

@@ -35,6 +35,4 @@ public class Queries {
             + Tables.Contacts.COLUMN_LAST_NAME + " TEXT,"
             + Tables.Contacts.COLUMN_EMAIL + " TEXT"
             + ");";
-
-    public static final String DROP_TABLE_CONTACTS = "DROP TABLE IF EXISTS " + Tables.Contacts.NAME;
 }

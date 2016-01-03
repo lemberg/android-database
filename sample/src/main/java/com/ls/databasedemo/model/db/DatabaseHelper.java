@@ -51,7 +51,7 @@ public class DatabaseHelper extends MigratableSQLiteOpenHelper {
     public List<TableInfo> getTablesInfo(Context context) {
         List<TableInfo> list = new ArrayList<>();
 
-        list.add(new TableInfo(Queries.CREATE_TABLE_CONTACTS, Queries.DROP_TABLE_CONTACTS));
+        list.add(new TableInfo(Tables.Contacts.NAME, Queries.CREATE_TABLE_CONTACTS));
 
         return list;
     }

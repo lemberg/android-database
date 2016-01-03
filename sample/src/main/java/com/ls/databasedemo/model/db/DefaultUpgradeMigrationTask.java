@@ -58,7 +58,7 @@ public class DefaultUpgradeMigrationTask implements IMigrationTask {
     private void drop(SQLiteDatabase db) {
         if (infoList != null) {
             for (TableInfo table : infoList) {
-                db.execSQL(table.getDropTableQuery());
+                db.execSQL("DROP TABLE IF EXISTS " + table.getTableName());
             }
         }
     }

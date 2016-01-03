@@ -30,33 +30,30 @@ import android.text.TextUtils;
  */
 public class TableInfo {
 
-    private String mCreateTableQuery;
-    private String mDropTableQuery;
+    private final String tableName;
+    private final String createTableQuery;
 
     /**
      * Info that helps to do initialization of database table.
-     *
-     * @param createTableQuery Script that creates table. CREATE TABLE table_name (column_name1 data_type, column_name2 data_type .... );
-     * @param dropTableQuery Script that drops table. DROP TABLE table_name; it will be used if database migration has failed.
      */
-    public TableInfo(String createTableQuery, String dropTableQuery) {
+    public TableInfo(String tableName, String createTableQuery) {
+        if (TextUtils.isEmpty(tableName)) {
+            throw new IllegalArgumentException("Table name query can't be empty");
+        }
+
         if (TextUtils.isEmpty(createTableQuery)) {
             throw new IllegalArgumentException("Create: SQL query can't be empty");
         }
 
-        if (TextUtils.isEmpty(dropTableQuery)) {
-            throw new IllegalArgumentException("Drop: SQL query can't be empty");
-        }
+        this.tableName = tableName;
+        this.createTableQuery = createTableQuery;
+    }
 
-        mCreateTableQuery = createTableQuery;
-        mDropTableQuery = dropTableQuery;
+    public String getTableName() {
+        return tableName;
     }
 
     public String getCreateTableQuery() {
-        return mCreateTableQuery;
-    }
-
-    public String getDropTableQuery() {
-        return mDropTableQuery;
+        return createTableQuery;
     }
 }

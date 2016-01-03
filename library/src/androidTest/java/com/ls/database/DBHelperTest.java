@@ -317,7 +317,7 @@ public class DBHelperTest extends InstrumentationTestCase {
         public List<TableInfo> getTablesInfo(Context context) {
             List<TableInfo> tableInfo = new ArrayList<>();
 
-            tableInfo.add(new TableInfo(Queries.CREATE_TABLE_HELPER_TESTS, Queries.DROP_TABLE_HELPER_TESTS));
+            tableInfo.add(new TableInfo(Tables.SimpleTable.NAME, Queries.CREATE_SIMPLE_DATA_TABLE));
 
             return tableInfo;
         }
