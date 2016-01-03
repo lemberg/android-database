@@ -51,9 +51,35 @@ public class DatabaseHelper extends MigratableSQLiteOpenHelper {
     public List<TableInfo> getTablesInfo(Context context) {
         List<TableInfo> list = new ArrayList<>();
 
-        list.add(new TableInfo(Tables.Contacts.NAME, Queries.CREATE_TABLE_CONTACTS));
+        list.add(createContactsTable());
 
         return list;
+    }
+
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    private TableInfo createContactsTable() {
+        TableInfo.Builder builder = new TableInfo.Builder(Tables.Contacts.NAME);
+
+        builder.addField(
+                new TableInfo.FieldInfo(Tables.Contacts.COLUMN_ID, TableInfo.FieldInfo.DataType.INTEGER)
+                        .setAutoincrement(true)
+                        .setPrimaryKey(TableInfo.FieldInfo.PrimaryKey.ASC)
+        );
+
+        builder.addField(
+                new TableInfo.FieldInfo(Tables.Contacts.COLUMN_FIRST_NAME, TableInfo.FieldInfo.DataType.TEXT)
+        );
+
+        builder.addField(
+                new TableInfo.FieldInfo(Tables.Contacts.COLUMN_LAST_NAME, TableInfo.FieldInfo.DataType.TEXT)
+        );
+
+        builder.addField(
+                new TableInfo.FieldInfo(Tables.Contacts.COLUMN_EMAIL, TableInfo.FieldInfo.DataType.TEXT)
+        );
+
+        TableInfo tableInfo = new TableInfo(builder);
+        return tableInfo;
     }
 
     @Override
