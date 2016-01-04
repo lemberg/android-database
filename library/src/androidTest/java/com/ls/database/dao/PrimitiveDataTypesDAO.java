@@ -25,6 +25,7 @@ package com.ls.database.dao;
 
 import com.ls.database.BaseDAO;
 import com.ls.database.DatabaseRegister;
+import com.ls.database.EntityConverter;
 import com.ls.database.Tables;
 import com.ls.database.entity.EnumValue;
 import com.ls.database.entity.PrimitiveDataTypesEntity;
@@ -37,7 +38,7 @@ import android.text.TextUtils;
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-public class PrimitiveDataTypesDAO extends BaseDAO<Long, PrimitiveDataTypesEntity> {
+public class PrimitiveDataTypesDAO extends BaseDAO<Long, PrimitiveDataTypesEntity> implements EntityConverter<PrimitiveDataTypesEntity> {
 
     public PrimitiveDataTypesDAO(DatabaseRegister databaseRegister) {
         super(databaseRegister);
@@ -62,7 +63,7 @@ public class PrimitiveDataTypesDAO extends BaseDAO<Long, PrimitiveDataTypesEntit
     }
 
     @Override
-    protected ContentValues toContentValues(PrimitiveDataTypesEntity entity) {
+    public ContentValues toContentValues(PrimitiveDataTypesEntity entity) {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(Tables.DataTypes.COLUMN_ID, entity.getId());
@@ -81,7 +82,7 @@ public class PrimitiveDataTypesDAO extends BaseDAO<Long, PrimitiveDataTypesEntit
     }
 
     @Override
-    protected PrimitiveDataTypesEntity toEntity(CursorParser parser) {
+    public PrimitiveDataTypesEntity toEntity(CursorParser parser) {
         PrimitiveDataTypesEntity entity = new PrimitiveDataTypesEntity();
 
         entity.setId(parser.readLong(Tables.DataTypes.COLUMN_ID));
@@ -104,5 +105,10 @@ public class PrimitiveDataTypesDAO extends BaseDAO<Long, PrimitiveDataTypesEntit
     @Override
     protected String getOrderBy() {
         return Tables.DataTypes.COLUMN_ID;
+    }
+
+    @Override
+    protected EntityConverter<PrimitiveDataTypesEntity> getEntityConverter() {
+        return this;
     }
 }

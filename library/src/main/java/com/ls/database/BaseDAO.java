@@ -283,7 +283,8 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
             return 0;
         }
 
-        ContentValues contentValues = toContentValues(entity);
+        EntityConverter<Entity> converter = getEntityConverter();
+        ContentValues contentValues = converter.toContentValues(entity);
 
         long id = 0;
 
@@ -337,7 +338,8 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
 
         SearchCondition searchCondition = getSearchCondition(key);
 
-        ContentValues contentValues = toContentValues(entity);
+        EntityConverter<Entity> converter = getEntityConverter();
+        ContentValues contentValues = converter.toContentValues(entity);
 
         if (contentValues.size() > 0) {
             Database database = getDatabase();
@@ -397,7 +399,8 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
             cursor.moveToFirst();
             CursorParser cursorParser = new CursorParser(cursor);
             do {
-                Entity entityNew = toEntity(cursorParser);
+                EntityConverter<Entity> converter = getEntityConverter();
+                Entity entityNew = converter.toEntity(cursorParser);
 
                 result.add(entityNew);
             } while (cursor.moveToNext());
@@ -416,7 +419,6 @@ public abstract class BaseDAO<Key, Entity> implements IDAO<Key, Entity> {
 
     protected abstract String getOrderBy();
 
-    protected abstract ContentValues toContentValues(Entity entity);
+    protected abstract EntityConverter<Entity> getEntityConverter();
 
-    protected abstract Entity toEntity(CursorParser parser);
 }

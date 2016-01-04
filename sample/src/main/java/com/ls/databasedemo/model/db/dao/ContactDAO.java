@@ -25,6 +25,7 @@ package com.ls.databasedemo.model.db.dao;
 
 import com.ls.database.BaseDAO;
 import com.ls.database.DatabaseRegister;
+import com.ls.database.EntityConverter;
 import com.ls.database.model.CursorParser;
 import com.ls.database.model.SearchCondition;
 import com.ls.databasedemo.model.db.DatabaseHelper;
@@ -36,7 +37,7 @@ import android.content.ContentValues;
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-public class ContactDAO extends BaseDAO<Long, Contact> {
+public class ContactDAO extends BaseDAO<Long, Contact> implements EntityConverter<Contact> {
 
     public ContactDAO(DatabaseRegister databaseRegister) {
         super(databaseRegister);
@@ -68,7 +69,12 @@ public class ContactDAO extends BaseDAO<Long, Contact> {
     }
 
     @Override
-    protected ContentValues toContentValues(Contact contact) {
+    protected EntityConverter<Contact> getEntityConverter() {
+        return this;
+    }
+
+    @Override
+    public ContentValues toContentValues(Contact contact) {
         ContentValues contentValues = new ContentValues();
 
         //for case when user got entity from database where id is autoincrement column
@@ -84,7 +90,7 @@ public class ContactDAO extends BaseDAO<Long, Contact> {
     }
 
     @Override
-    protected Contact toEntity(CursorParser parser) {
+    public Contact toEntity(CursorParser parser) {
         Contact contact = new Contact();
 
         contact.setId(parser.readLong(Tables.Contacts.COLUMN_ID));
