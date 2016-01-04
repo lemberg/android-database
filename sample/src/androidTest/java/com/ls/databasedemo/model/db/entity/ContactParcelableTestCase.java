@@ -1,10 +1,7 @@
-package com.ls.databasedemo.model.db.dao;
-
-import com.ls.databasedemo.model.db.entity.Contact;
-
-import junit.framework.TestCase;
+package com.ls.databasedemo.model.db.entity;
 
 import android.os.Parcel;
+import junit.framework.TestCase;
 
 public class ContactParcelableTestCase extends TestCase {
 
