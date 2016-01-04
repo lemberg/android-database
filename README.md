@@ -13,7 +13,7 @@ To implement the following database structure in your app, you need pay your att
 
 
  1. Make your `DatabaseHelper` extends `MigratableSQLiteOpenHelper` or `SQLiteOpenHelper` and override all the methods to configure your database.
- `MigratableSQLiteOpenHelper` helps to manage data migration while database upgrade or downgrade.
+ `MigratableSQLiteOpenHelper` helps to manage data migration while database upgrading or downgrading.
 
  2. In your `DatabaseManager` create a global instance of `DatabaseRegister
     class` and `registerDatabase(String databaseName, SQLiteOpenHelper sqLiteOpenHelper)` method.

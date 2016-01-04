@@ -58,7 +58,7 @@ public class DatabaseRegister {
      * @param databaseName Name of database file to register it,
      *                     should be same that is declared in {@link SQLiteOpenHelper}.
      * @param sqLiteOpenHelper A sqLiteOpenHelper class to manage database creation and version management.
-     * {@link MigratableSQLiteOpenHelper} helps to manage data migration while database upgrade or downgrade.
+     * {@link MigratableSQLiteOpenHelper} helps to manage data migration while database upgrading or downgrading.
      */
     public void addDatabase(String databaseName, SQLiteOpenHelper sqLiteOpenHelper) {
         if (!mDatabaseMap.containsKey(databaseName)) {
