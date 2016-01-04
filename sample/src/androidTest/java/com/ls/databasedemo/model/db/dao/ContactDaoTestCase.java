@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-public class ContactDaoTest extends InstrumentationTestCase {
+public class ContactDaoTestCase extends InstrumentationTestCase {
 
     private DatabaseRegister databaseRegister;
 
