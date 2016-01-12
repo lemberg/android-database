@@ -44,7 +44,7 @@ Using this database model, makes your calls to database easy and simple, here ho
 
 If you want to see full code, check out sample app.
 
-Also please check unit tests [section](unit-tests-guide/).
+Also please check unit tests [section](https://github.com/lemberg/android-database/wiki/unit-tests).
 
 **License**
 ```
