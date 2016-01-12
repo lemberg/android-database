@@ -44,11 +44,13 @@ Using this database model, makes your calls to database easy and simple, here ho
 
 If you want to see full code, check out sample app.
 
+Also please check unit tests [section](https://github.com/lemberg/android-database/wiki/unit-tests).
+
 **License**
 ```
 The MIT License (MIT)
 
-Copyright (c) 2015 Lemberg Solutions
+Copyright (c) 2016 Lemberg Solutions Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
