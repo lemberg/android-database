@@ -38,6 +38,6 @@ public class App extends Application {
         super.onCreate();
 
         DatabaseManager.init(this);
-        DatabaseManager.getInstance().registerDatabase(DatabaseHelper.DB_NAME, new DatabaseHelper(this));
+        DatabaseManager.getInstance().registerDatabase(new DatabaseHelper(this));
     }
 }

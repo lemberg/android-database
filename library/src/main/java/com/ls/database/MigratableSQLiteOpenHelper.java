@@ -23,15 +23,13 @@
  */
 package com.ls.database;
 
-import com.ls.database.model.IMigrationTask;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
+import com.ls.database.model.IMigrationTask;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,38 +41,15 @@ import java.util.Map;
 /**
  * @author Stanislav Bodnar, Lemberg Solutions
  */
-public abstract class MigratableSQLiteOpenHelper extends SQLiteOpenHelper {
+public abstract class MigratableSQLiteOpenHelper extends BaseSQLiteOpenHelper {
 
-    private Context appContext;
-
-    public MigratableSQLiteOpenHelper(
-            Context context,
-            String name,
-            SQLiteDatabase.CursorFactory factory,
-            int version) {
-
+    public MigratableSQLiteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
-
-        this.appContext = context.getApplicationContext();
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public MigratableSQLiteOpenHelper(
-            Context context,
-            String name,
-            SQLiteDatabase.CursorFactory factory,
-            int version,
-            DatabaseErrorHandler errorHandler) {
-
-        super(context.getApplicationContext(), name, factory, version, errorHandler);
-
-        this.appContext = context.getApplicationContext();
+    public MigratableSQLiteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
+        super(context, name, factory, version, errorHandler);
     }
-
-    /**
-     * Returns list of SQL scripts to create tables or triggers of database.
-     */
-    public abstract List<TableInfo> getTablesInfo(Context context);
 
     /**
      * Returns set of migration tasks. {@link Integer} - version of database,
@@ -120,11 +95,6 @@ public abstract class MigratableSQLiteOpenHelper extends SQLiteOpenHelper {
     public abstract void onDowngradeMigrationFailed(Context context, SQLiteDatabase database, int oldVersion, int newVersion);
 
     @Override
-    public final void onCreate(SQLiteDatabase db) {
-        create(db);
-    }
-
-    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         final Map<Integer, IMigrationTask> map = getSortedMigrationTasks(MigrationType.UPGRADE);
 
@@ -142,10 +112,10 @@ public abstract class MigratableSQLiteOpenHelper extends SQLiteOpenHelper {
             }
         } catch (SQLiteException e) {
             try {
-                onUpgradeMigrationFailed(appContext, db, oldVersion, newVersion);
+                onUpgradeMigrationFailed(getAppContext(), db, oldVersion, newVersion);
             } finally {
-                drop(db);
-                create(db);
+                dropDatabase(db);
+                createDatabase(db);
             }
         }
     }
@@ -169,10 +139,10 @@ public abstract class MigratableSQLiteOpenHelper extends SQLiteOpenHelper {
             }
         } catch (SQLiteException e) {
             try {
-                onDowngradeMigrationFailed(appContext, db, oldVersion, newVersion);
+                onDowngradeMigrationFailed(getAppContext(), db, oldVersion, newVersion);
             } finally {
-                drop(db);
-                create(db);
+                dropDatabase(db);
+                createDatabase(db);
             }
         }
     }
@@ -184,7 +154,7 @@ public abstract class MigratableSQLiteOpenHelper extends SQLiteOpenHelper {
 
         switch (type) {
             case UPGRADE:
-                tasks = getUpgradeMigrationTasks(appContext);
+                tasks = getUpgradeMigrationTasks(getAppContext());
 
                 comparator = new Comparator<Map.Entry<Integer, IMigrationTask>>() {
 
@@ -196,7 +166,7 @@ public abstract class MigratableSQLiteOpenHelper extends SQLiteOpenHelper {
                 break;
 
             case DOWNGRADE:
-                tasks = getDowngradeMigrationTasks(appContext);
+                tasks = getDowngradeMigrationTasks(getAppContext());
 
                 comparator = new Comparator<Map.Entry<Integer, IMigrationTask>>() {
 
@@ -224,24 +194,6 @@ public abstract class MigratableSQLiteOpenHelper extends SQLiteOpenHelper {
         }
 
         return sortedMap;
-    }
-
-    private void create(SQLiteDatabase db) {
-        List<TableInfo> tables = getTablesInfo(appContext);
-        if (tables != null) {
-            for (TableInfo table : tables) {
-                db.execSQL(table.getCreateTableQuery());
-            }
-        }
-    }
-
-    private void drop(SQLiteDatabase db) {
-        List<TableInfo> tables = getTablesInfo(appContext);
-        if (tables != null) {
-            for (TableInfo table : tables) {
-                db.execSQL("DROP TABLE IF EXISTS " + table.getTableName());
-            }
-        }
     }
 
     private enum MigrationType {

@@ -23,12 +23,11 @@
  */
 package com.ls.databasedemo.model.db;
 
+import android.content.Context;
+import com.ls.database.BaseSQLiteOpenHelper;
 import com.ls.database.DatabaseRegister;
 import com.ls.databasedemo.model.db.dao.ContactDAO;
 import com.ls.databasedemo.model.db.entity.Contact;
-
-import android.content.Context;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.List;
 
@@ -64,8 +63,8 @@ public class DatabaseManager {
         contactDAO = new ContactDAO(databaseRegister);
     }
 
-    public void registerDatabase(String databaseName, SQLiteOpenHelper sqLiteOpenHelper) {
-        databaseRegister.addDatabase(databaseName, sqLiteOpenHelper);
+    public void registerDatabase(BaseSQLiteOpenHelper sqLiteOpenHelper) {
+        databaseRegister.addDatabase(sqLiteOpenHelper);
     }
 
     public  void addContacts(List<Contact> contacts) {

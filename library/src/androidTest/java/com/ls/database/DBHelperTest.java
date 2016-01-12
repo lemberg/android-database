@@ -79,7 +79,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testUpgradeMigration1to2() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_1));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -87,7 +87,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_2));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_2));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -104,7 +104,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testUpgradeMigration2to3() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_2));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_2));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -112,7 +112,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_3));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_3));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -129,7 +129,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testUpgradeMigration1to3() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_1));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -137,7 +137,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_3));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_3));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -155,7 +155,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testDowngradeMigration3to2() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_3));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_3));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -163,7 +163,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_2));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_2));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -179,7 +179,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testDowngradeMigration2to1() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_2));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_2));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -187,7 +187,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_1));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -205,7 +205,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testDowngradeMigration3to1() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_3));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_3));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -213,7 +213,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_1));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_1));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -230,7 +230,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testUpgradeFailed() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_3));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_3));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -238,7 +238,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_4));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_4));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -251,7 +251,7 @@ public class DBHelperTest extends InstrumentationTestCase {
     public void testDowngradeFailed() {
         DatabaseRegister databaseRegister = new DatabaseRegister(getInstrumentation().getTargetContext());
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_5));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_5));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 
@@ -259,7 +259,7 @@ public class DBHelperTest extends InstrumentationTestCase {
 
         resetInputData();
 
-        databaseRegister.addDatabase(TestingHelper.DB_NAME, new TestingHelper(TestingHelper.VERSION_4));
+        databaseRegister.addDatabase(new TestingHelper(TestingHelper.VERSION_4));
         databaseRegister.getDatabase(TestingHelper.DB_NAME).open();
         databaseRegister.getDatabase(TestingHelper.DB_NAME).close();
 

@@ -48,7 +48,7 @@ public class ContactDaoTestCase extends InstrumentationTestCase {
 
         Context context = getInstrumentation().getTargetContext();
         databaseRegister = new DatabaseRegister(context);
-        databaseRegister.addDatabase(DatabaseHelper.DB_NAME, new DatabaseHelper(context));
+        databaseRegister.addDatabase(new DatabaseHelper(context));
 
         new ContactDAO(databaseRegister).clear();
     }

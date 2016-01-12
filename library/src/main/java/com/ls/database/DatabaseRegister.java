@@ -24,7 +24,6 @@
 package com.ls.database;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 
 import java.util.HashMap;
@@ -55,15 +54,13 @@ public class DatabaseRegister {
     }
 
     /**
-     * @param databaseName Name of database file to register it,
-     *                     should be same that is declared in {@link SQLiteOpenHelper}.
      * @param sqLiteOpenHelper A sqLiteOpenHelper class to manage database creation and version management.
      * {@link MigratableSQLiteOpenHelper} helps to manage data migration while database upgrading or downgrading.
      */
-    public void addDatabase(String databaseName, SQLiteOpenHelper sqLiteOpenHelper) {
-        if (!mDatabaseMap.containsKey(databaseName)) {
+    public void addDatabase(BaseSQLiteOpenHelper sqLiteOpenHelper) {
+        if (!mDatabaseMap.containsKey(sqLiteOpenHelper.getDbName())) {
             Database database = new Database(mContext, sqLiteOpenHelper);
-            mDatabaseMap.put(databaseName, database);
+            mDatabaseMap.put(sqLiteOpenHelper.getDbName(), database);
         }
     }
 

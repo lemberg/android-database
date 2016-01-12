@@ -9,17 +9,17 @@ This sample will show you an easy way to:
 
 **Implementation guide**
 
-To implement the following database structure in your app, you need pay your attention on 3 main classes: `SQLiteOpenHelper`, `DatabaseRegister`, `BaseDAO`.
+To implement the following database structure in your app, you need pay your attention on 3 main classes: `BaseSQLiteOpenHelper`, `DatabaseRegister`, `BaseDAO`.
 
 
- 1. Make your `DatabaseHelper` extends `SQLiteOpenHelper` and override all the methods to configure your database.
+ 1. Make your `DatabaseHelper` extends `BaseSQLiteOpenHelper` and override all the methods to configure your database.
  `MigratableSQLiteOpenHelper` helps to manage data migration while database upgrading or downgrading.
 
  2. In your `DatabaseManager` create a global instance of `DatabaseRegister
-    class` and `registerDatabase(String databaseName, SQLiteOpenHelper sqLiteOpenHelper)` method.
+    class` and `registerDatabase(BaseSQLiteOpenHelper sqLiteOpenHelper)` method.
 
  3. In Application class you will now be able to init your
-    `DatabaseManager` and `registerDatabase(DatabaseHelper.DB_NAME, new DatabaseHelper())`
+    `DatabaseManager` and `registerDatabase(new DatabaseHelper())`
 
  4. The next step is implementation of functionality to access data of
     database. To make it work just `extend BaseDAO<Key, Entity>` which
